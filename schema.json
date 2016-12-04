@@ -1,0 +1,87 @@
+{
+  "title": "Parameters",
+  "type": "object",
+  "required": [
+    "username",
+    "#password",
+    "remote_host",
+    "remote_path",
+    "protocol",
+    "port",
+    "append_datetime",
+    "datetime_format",
+    "placeholder",
+    "retries"
+  ],
+  "properties": {
+    "username": {
+      "title": "Username",
+      "type": "string",
+      "minLength": 1,
+      "default": ""
+    },
+    "#password": {
+      "title": "Password",
+      "type": "string",
+      "format": "password",
+      "minLength": 1,
+      "default": ""
+    },
+    "remote_host": {
+      "title": "Remote host",
+      "type": "string",
+      "minLength": 1,
+      "default": ""
+    },
+    "remote_path": {
+      "title": "Remote path",
+      "type": "string",
+      "minLength": 1,
+      "default": "/"
+    },
+    "protocol": {
+      "title": "Protocol",
+      "type": "string",
+      "enum": [
+        "ftp",
+        "ftps"
+      ]
+    },
+    "port": {
+      "title": "Port",
+      "type": "integer",
+      "default": 21,
+      "minimum": 1,
+      "maximum": 1500
+    },
+
+    "append_datetime": {
+      "title": "Append datetime",
+      "type": "boolean",
+      "enum": [
+        false,
+        true
+      ],
+      "default": false
+    },
+    "datetime_format": {
+      "title": "Datetime format",
+      "type": "string",
+      "minLength": 1,
+      "default": "YYYYMMDD_HHmmss"
+    },
+    "placeholder": {
+      "title": "Placeholder",
+      "type": "string",
+      "minLength": 0,
+      "default": ""
+    },
+    "retries": {
+      "title": "Connection retries",
+      "type": "integer",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 10
+    }
+  }
+}
