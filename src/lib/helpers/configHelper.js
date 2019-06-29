@@ -1,5 +1,4 @@
 'use strict';
-import path from 'path';
 import nconf from 'nconf';
 import isThere from 'is-there';
 
