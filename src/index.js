@@ -46,7 +46,9 @@ async function main() {
     }
     process.exit(0);
   } catch (error) {
-    console.error(error);
+    console.log(
+      `[ERROR]: Upload failed (${error.message ? error.message : error})`
+    );
     process.exit(1);
   }
 }

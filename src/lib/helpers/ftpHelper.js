@@ -31,7 +31,7 @@ async function putFileToFTP({ ftpConfig, sourceDir, remotePath, file }) {
   const client = new Client();
   const sourceFile = path.join(sourceDir, file.source);
   const outputFile = path.join(remotePath, file.destination);
-  client.ftp.verbose = false;
+  client.ftp.verbose = true;
   try {
     await client.access({
       ...ftpConfig,
@@ -41,9 +41,7 @@ async function putFileToFTP({ ftpConfig, sourceDir, remotePath, file }) {
     await client.upload(fs.createReadStream(sourceFile), outputFile);
     console.log(`[INFO]: ${file.source} uploaded`);
   } catch (error) {
-    console.log(
-      `[ERROR]: Upload failed: ${error.message ? error.message : error}`
-    );
+    throw error;
   }
   client.close();
 }
