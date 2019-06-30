@@ -9,7 +9,7 @@ const {
   uploadFilesToFTPS
 } = require('./lib/helpers/ftpHelper');
 
-(async () => {
+async function main() {
   try {
     // Read the input configuration.
     const {
@@ -49,4 +49,6 @@ const {
     console.error(error);
     process.exit(1);
   }
-})();
+}
+
+main();
