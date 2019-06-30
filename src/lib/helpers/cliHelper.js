@@ -1,6 +1,6 @@
 'use strict';
-import program from 'commander';
-import { DEFAULT_DATA_DIR } from '../constants';
+const program = require('commander');
+const { DEFAULT_DATA_DIR } = require('../constants');
 
 program
   .version('1.0.0')
@@ -11,4 +11,4 @@ program
   )
   .parse(process.argv);
 
-export default program;
+module.exports = program;

@@ -1,10 +1,13 @@
-import FTPS from 'ftps-promise';
-import path from 'path';
-import command from './lib/helpers/cliHelper';
-import { getConfig } from './lib/helpers/configHelper';
-import { parseConfiguration } from './lib/helpers/keboolaHelper';
-import { CONFIG_FILE, INPUT_TABLES_DIR } from './lib/constants';
-import { uploadFilesToFTP, uploadFilesToFTPS } from './lib/helpers/ftpHelper';
+const FTPS = require('ftps-promise');
+const path = require('path');
+const command = require('./lib/helpers/cliHelper');
+const { getConfig } = require('./lib/helpers/configHelper');
+const { parseConfiguration } = require('./lib/helpers/keboolaHelper');
+const { CONFIG_FILE, INPUT_TABLES_DIR } = require('./lib/constants');
+const {
+  uploadFilesToFTP,
+  uploadFilesToFTPS
+} = require('./lib/helpers/ftpHelper');
 
 (async () => {
   try {

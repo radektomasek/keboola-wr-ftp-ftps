@@ -10,15 +10,8 @@
   ],
   "author": "Radek Tomasek <radek.tomasek@gmail.com>",
   "license": "NONE",
-  "devDependencies": {
-    "babel-cli": "^6.9.0",
-    "babel-core": "^6.9.0",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "babel-polyfill": "^6.9.0",
     "basic-ftp": "^3.7.0",
     "commander": "^2.9.0",
     "ftps-promise": "^0.1.1",

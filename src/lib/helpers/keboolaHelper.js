@@ -1,16 +1,16 @@
 'use strict';
-import moment from 'moment';
-import { isEmpty, isUndefined } from 'lodash';
-import {
+const moment = require('moment');
+const { isEmpty, isUndefined } = require('lodash');
+const {
   DEFAULT_PORT,
   DEFAULT_DATE_FORMAT,
   DEFAULT_OUTPUT_DIR,
   DEFAULT_NUMBER_OF_RETRIES
-} from '../constants';
+} = require('../constants');
 // This function check the input configuration specified in KBC.
 // Check whether the required fields are provided.
 // Prepare simple output that is going to be used in later phases.
-export async function parseConfiguration(configObject) {
+async function parseConfiguration(configObject) {
   return new Promise((resolve, reject) => {
     const inputFiles = configObject.get('storage:input:tables');
     // If no file is specified, we can stop the processing.
@@ -100,7 +100,7 @@ export async function parseConfiguration(configObject) {
 /**
  * This functions prepares array of source and destination files which are going to be uploaded on the remote location.
  */
-export function generateSourceDestinationMapping(
+function generateSourceDestinationMapping(
   inputFiles,
   hasPlaceholder,
   appendDatetime,
@@ -124,7 +124,7 @@ export function generateSourceDestinationMapping(
 /**
  * This function generates the actual destination name.
  */
-export function generateDestinationName(
+function generateDestinationName(
   fileName,
   hasPlaceholder,
   appendDatetime,
@@ -146,3 +146,9 @@ export function generateDestinationName(
       : remoteDestinationFile;
   }
 }
+
+module.exports = {
+  parseConfiguration,
+  generateSourceDestinationMapping,
+  generateDestinationName
+};

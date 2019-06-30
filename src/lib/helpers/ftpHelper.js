@@ -1,15 +1,15 @@
 'use strict';
-import path from 'path';
-import { Client } from 'basic-ftp';
-import fs from 'fs';
+const path = require('path');
+const { Client } = require('basic-ftp');
+const fs = require('fs');
 
-export function uploadFilesToFTPS({ ftps, sourceDir, files, remotePath }) {
+function uploadFilesToFTPS({ ftps, sourceDir, files, remotePath }) {
   return files.map(file => {
     return putFileToFTPS({ ftps, sourceDir, remotePath, file });
   });
 }
 
-export function putFileToFTPS({ ftps, sourceDir, remotePath, file }) {
+function putFileToFTPS({ ftps, sourceDir, remotePath, file }) {
   return new Promise((resolve, reject) => {
     const sourceFile = path.join(sourceDir, file.source);
     const outputFile = path.join(remotePath, file.destination);
@@ -21,18 +21,13 @@ export function putFileToFTPS({ ftps, sourceDir, remotePath, file }) {
   });
 }
 
-export async function uploadFilesToFTP({
-  ftpConfig,
-  sourceDir,
-  files,
-  remotePath
-}) {
+async function uploadFilesToFTP({ ftpConfig, sourceDir, files, remotePath }) {
   for (const file of files) {
     await putFileToFTP({ ftpConfig, sourceDir, remotePath, file });
   }
 }
 
-export async function putFileToFTP({ ftpConfig, sourceDir, remotePath, file }) {
+async function putFileToFTP({ ftpConfig, sourceDir, remotePath, file }) {
   const client = new Client();
   const sourceFile = path.join(sourceDir, file.source);
   const outputFile = path.join(remotePath, file.destination);
@@ -52,3 +47,10 @@ export async function putFileToFTP({ ftpConfig, sourceDir, remotePath, file }) {
   }
   client.close();
 }
+
+module.exports = {
+  uploadFilesToFTPS,
+  putFileToFTPS,
+  uploadFilesToFTP,
+  putFileToFTP
+};
