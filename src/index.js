@@ -35,14 +35,9 @@ async function main() {
       );
       console.log(`${result.length} file(s) uploaded successfully!`);
     } else if (protocol === 'ftp') {
-      const ftpConfig = {
-        host,
-        port,
-        user: username,
-        password: password
-      };
+      const ftpConfig = { host, port, user: username, password: password };
       await uploadFilesToFTP({ ftpConfig, sourceDir, files, remotePath });
-      console.log(`All file(s) uploaded successfully!`);
+      console.log(`[INFO]: All file(s) uploaded successfully!`);
     }
     process.exit(0);
   } catch (error) {
