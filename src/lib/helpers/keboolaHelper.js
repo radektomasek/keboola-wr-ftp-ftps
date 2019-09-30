@@ -47,12 +47,15 @@ async function parseConfiguration(configObject) {
     const retries =
       configObject.get('parameters:retries') || DEFAULT_NUMBER_OF_RETRIES;
     // We should allow processing of the FTP/FTPS protocols in this connector only. Let's do a particular test
-    const protocolCheckExpression = /ftp|ftps/;
+    const protocolCheckExpression = /ftp|ftps|ftps_debug/;
     if (!protocolCheckExpression.test(protocol.toLowerCase())) {
       reject(
         'Only ftp or ftps protocols are allowed! Please update your configuration!'
       );
     }
+    const verbose = !isUndefined(configObject.get('parameters:verbose'))
+      ? configObject.get('parameters:verbose')
+      : false;
     // Check whether a user wants to append a datetime to a filename.
     const appendDatetime = !isUndefined(
       configObject.get('parameters:append_datetime')
@@ -92,7 +95,8 @@ async function parseConfiguration(configObject) {
       username,
       password,
       protocol,
-      remotePath
+      remotePath,
+      verbose
     });
   });
 }

@@ -21,21 +21,32 @@ function putFileToFTPS({ ftps, sourceDir, remotePath, file }) {
   });
 }
 
-async function uploadFilesToFTP({ ftpConfig, sourceDir, files, remotePath }) {
+async function uploadFilesToFTP({
+  ftpConfig,
+  sourceDir,
+  files,
+  remotePath,
+  verbose
+}) {
   for (const file of files) {
-    await putFileToFTP({ ftpConfig, sourceDir, remotePath, file });
+    await putFileToFTP({ ftpConfig, sourceDir, remotePath, file, verbose });
   }
 }
 
-async function putFileToFTP({ ftpConfig, sourceDir, remotePath, file }) {
+async function putFileToFTP({
+  ftpConfig,
+  sourceDir,
+  remotePath,
+  file,
+  verbose
+}) {
   const client = new Client();
   const sourceFile = path.join(sourceDir, file.source);
   const outputFile = path.join(remotePath, file.destination);
-  client.ftp.verbose = false;
+  client.ftp.verbose = verbose;
   try {
     await client.access({
-      ...ftpConfig,
-      secure: false
+      ...ftpConfig
     });
     console.log(`[INFO]: Preparing upload of the ${file.source}`);
     await client.upload(fs.createReadStream(sourceFile), outputFile);

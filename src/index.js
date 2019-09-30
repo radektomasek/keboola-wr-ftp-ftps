@@ -20,7 +20,8 @@ async function main() {
       username,
       password,
       protocol,
-      remotePath
+      remotePath,
+      verbose
     } = await parseConfiguration(
       getConfig(path.join(command.data, CONFIG_FILE))
     );
@@ -34,14 +35,21 @@ async function main() {
         uploadFilesToFTPS({ ftps, sourceDir, files, remotePath })
       );
       console.log(`${result.length} file(s) uploaded successfully!`);
-    } else if (protocol === 'ftp') {
+    } else if (protocol === 'ftp' || protocol === 'ftps_debug') {
       const ftpConfig = {
         host,
         port,
         user: username,
-        password: password
+        password: password,
+        secure: protocol === 'ftps_debug'
       };
-      await uploadFilesToFTP({ ftpConfig, sourceDir, files, remotePath });
+      await uploadFilesToFTP({
+        ftpConfig,
+        sourceDir,
+        files,
+        remotePath,
+        verbose
+      });
       console.log(`[INFO]: All file(s) uploaded successfully!`);
     }
     process.exit(0);
