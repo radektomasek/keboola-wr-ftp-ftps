@@ -49,7 +49,10 @@ async function putFileToFTP({
       ...ftpConfig
     });
     console.log(`[INFO]: Preparing upload of the ${file.source}`);
-    await client.upload(fs.createReadStream(sourceFile), outputFile);
+    await client.upload(
+      fs.createReadStream(sourceFile, { encoding: 'utf8' }),
+      outputFile
+    );
     console.log(`[INFO]: ${file.source} uploaded`);
   } catch (error) {
     throw error;
