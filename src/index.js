@@ -6,7 +6,8 @@ const { parseConfiguration } = require('./lib/helpers/keboolaHelper');
 const { CONFIG_FILE, INPUT_TABLES_DIR } = require('./lib/constants');
 const {
   uploadFilesToFTP,
-  uploadFilesToFTPS
+  uploadFilesToFTPS,
+  uploadDirectoryToFTP
 } = require('./lib/helpers/ftpHelper');
 
 async function main() {
@@ -21,7 +22,9 @@ async function main() {
       password,
       protocol,
       remotePath,
-      verbose
+      verbose,
+      timeout,
+      canUploadDirectory
     } = await parseConfiguration(
       getConfig(path.join(command.data, CONFIG_FILE))
     );
@@ -43,14 +46,28 @@ async function main() {
         password: password,
         secure: protocol === 'ftps_debug'
       };
-      await uploadFilesToFTP({
-        ftpConfig,
-        sourceDir,
-        files,
-        remotePath,
-        verbose
-      });
-      console.log(`[INFO]: All file(s) uploaded successfully!`);
+      if (canUploadDirectory) {
+        await uploadDirectoryToFTP({
+          ftpConfig,
+          sourceDir,
+          remotePath,
+          verbose,
+          timeout
+        });
+        console.log(
+          `[INFO]: The content of data directory and file(s) were uploaded successfully!`
+        );
+      } else {
+        await uploadFilesToFTP({
+          ftpConfig,
+          sourceDir,
+          files,
+          remotePath,
+          verbose,
+          timeout
+        });
+        console.log(`[INFO]: All file(s) uploaded successfully!`);
+      }
     }
     process.exit(0);
   } catch (error) {

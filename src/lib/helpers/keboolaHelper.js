@@ -3,6 +3,7 @@ const moment = require('moment');
 const { isEmpty, isUndefined } = require('lodash');
 const {
   DEFAULT_PORT,
+  DEFAULT_TIMEOUT,
   DEFAULT_DATE_FORMAT,
   DEFAULT_OUTPUT_DIR,
   DEFAULT_NUMBER_OF_RETRIES
@@ -53,6 +54,17 @@ async function parseConfiguration(configObject) {
         'Only ftp or ftps protocols are allowed! Please update your configuration!'
       );
     }
+
+    const canUploadDirectory = !isUndefined(
+      configObject.get('parameters:upload_directory')
+    )
+      ? configObject.get('parameters:upload_directory')
+      : false;
+
+    const timeout = !isUndefined(configObject.get('parameters:timeout'))
+      ? configObject.get('parameters:timeout')
+      : DEFAULT_TIMEOUT;
+
     const verbose = !isUndefined(configObject.get('parameters:verbose'))
       ? configObject.get('parameters:verbose')
       : false;
@@ -96,7 +108,9 @@ async function parseConfiguration(configObject) {
       password,
       protocol,
       remotePath,
-      verbose
+      verbose,
+      timeout,
+      canUploadDirectory
     });
   });
 }

@@ -76,8 +76,21 @@
       "minimum": 1,
       "maximum": 10
     },
+    "timeout": {
+      "title": "FTP Timeout",
+      "type": "integer",
+      "default": 10000,
+      "minimum": 1000,
+      "maximum": 50000
+    },
     "verbose": {
       "title": "Verbose",
+      "type": "boolean",
+      "enum": [false, true],
+      "default": false
+    },
+    "upload_directory": {
+      "title": "Upload the whole data dir at once",
       "type": "boolean",
       "enum": [false, true],
       "default": false

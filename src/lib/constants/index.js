@@ -6,6 +6,7 @@ const DEFAULT_NUMBER_OF_RETRIES = 10;
 const INPUT_TABLES_DIR = '/in/tables';
 const CONFIG_FILE = 'config.json';
 const DEFAULT_PORT = 21;
+const DEFAULT_TIMEOUT = 10000;
 
 module.exports = {
   DEFAULT_DATE_FORMAT,
@@ -14,5 +15,6 @@ module.exports = {
   DEFAULT_NUMBER_OF_RETRIES,
   INPUT_TABLES_DIR,
   CONFIG_FILE,
-  DEFAULT_PORT
+  DEFAULT_PORT,
+  DEFAULT_TIMEOUT
 };

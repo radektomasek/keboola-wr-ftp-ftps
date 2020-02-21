@@ -26,10 +26,47 @@ async function uploadFilesToFTP({
   sourceDir,
   files,
   remotePath,
-  verbose
+  verbose,
+  timeout
 }) {
   for (const file of files) {
-    await putFileToFTP({ ftpConfig, sourceDir, remotePath, file, verbose });
+    await putFileToFTP({
+      ftpConfig,
+      sourceDir,
+      remotePath,
+      file,
+      verbose,
+      timeout
+    });
+  }
+}
+
+async function uploadDirectoryToFTP({
+  ftpConfig,
+  sourceDir,
+  remotePath,
+  verbose,
+  timeout
+}) {
+  const client = new Client(timeout);
+  if (verbose) {
+    client.trackProgress(info => {
+      console.log('File', info.name);
+      console.log('Type', info.type);
+      console.log('Transferred', info.bytes);
+      console.log('Transferred Overall', info.bytesOverall);
+    });
+    client.ftp.verbose = verbose;
+  }
+
+  try {
+    await client.access({
+      ...ftpConfig
+    });
+    console.log(`[INFO]: Preparing upload of the data directory`);
+    await client.uploadFromDir(sourceDir, remotePath);
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -38,12 +75,22 @@ async function putFileToFTP({
   sourceDir,
   remotePath,
   file,
-  verbose
+  verbose,
+  timeout
 }) {
-  const client = new Client();
+  const client = new Client(timeout);
+  if (verbose) {
+    client.trackProgress(info => {
+      console.log('File', info.name);
+      console.log('Type', info.type);
+      console.log('Transferred', info.bytes);
+      console.log('Transferred Overall', info.bytesOverall);
+    });
+    client.ftp.verbose = verbose;
+  }
   const sourceFile = path.join(sourceDir, file.source);
   const outputFile = path.join(remotePath, file.destination);
-  client.ftp.verbose = verbose;
+
   try {
     await client.access({
       ...ftpConfig
@@ -64,5 +111,6 @@ module.exports = {
   uploadFilesToFTPS,
   putFileToFTPS,
   uploadFilesToFTP,
-  putFileToFTP
+  putFileToFTP,
+  uploadDirectoryToFTP
 };
