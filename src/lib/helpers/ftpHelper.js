@@ -21,26 +21,6 @@ function putFileToFTPS({ ftps, sourceDir, remotePath, file }) {
   });
 }
 
-async function uploadFilesToFTP({
-  ftpConfig,
-  sourceDir,
-  files,
-  remotePath,
-  verbose,
-  timeout
-}) {
-  for (const file of files) {
-    await putFileToFTP({
-      ftpConfig,
-      sourceDir,
-      remotePath,
-      file,
-      verbose,
-      timeout
-    });
-  }
-}
-
 async function uploadDirectoryToFTP({
   ftpConfig,
   sourceDir,
@@ -70,31 +50,53 @@ async function uploadDirectoryToFTP({
   }
 }
 
-async function putFileToFTP({
+async function uploadFilesToFTP({
   ftpConfig,
   sourceDir,
+  files,
   remotePath,
-  file,
   verbose,
   timeout
 }) {
-  const client = new Client(timeout);
-  if (verbose) {
-    client.trackProgress(info => {
-      console.log('File', info.name);
-      console.log('Type', info.type);
-      console.log('Transferred', info.bytes);
-      console.log('Transferred Overall', info.bytesOverall);
+  try {
+    const client = new Client(timeout);
+    if (verbose) {
+      client.trackProgress(info => {
+        console.log('File', info.name);
+        console.log('Type', info.type);
+        console.log('Transferred', info.bytes);
+        console.log('Transferred Overall', info.bytesOverall);
+      });
+      client.ftp.verbose = verbose;
+    }
+
+    await client.access({
+      ...ftpConfig
     });
-    client.ftp.verbose = verbose;
+
+    console.log(`[INFO]: Successfully connected to a remote location`);
+
+    for (const file of files) {
+      await putFileToFTP({
+        client,
+        sourceDir,
+        remotePath,
+        file
+      });
+    }
+
+    console.log(`[INFO]: Disconnecting from the remote location`);
+    client.close();
+  } catch (error) {
+    throw error;
   }
+}
+
+async function putFileToFTP({ client, sourceDir, remotePath, file }) {
   const sourceFile = path.join(sourceDir, file.source);
   const outputFile = path.join(remotePath, file.destination);
 
   try {
-    await client.access({
-      ...ftpConfig
-    });
     console.log(`[INFO]: Preparing upload of the ${file.source}`);
     await client.upload(
       fs.createReadStream(sourceFile, { encoding: 'utf8' }),
@@ -104,7 +106,6 @@ async function putFileToFTP({
   } catch (error) {
     throw error;
   }
-  client.close();
 }
 
 module.exports = {
