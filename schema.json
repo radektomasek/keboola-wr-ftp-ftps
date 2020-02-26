@@ -11,7 +11,10 @@
     "append_datetime",
     "datetime_format",
     "placeholder",
-    "retries"
+    "retries",
+    "verbose",
+    "timeout",
+    "upload_directory"
   ],
   "properties": {
     "username": {
