@@ -12,6 +12,7 @@
   "license": "NONE",
   "devDependencies": {},
   "dependencies": {
+    "async-retry": "^1.3.1",
     "basic-ftp": "^4.5.3",
     "commander": "^2.9.0",
     "ftps-promise": "^0.1.1",

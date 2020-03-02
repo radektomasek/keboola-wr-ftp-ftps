@@ -1,7 +1,9 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const retry = require('async-retry');
 const { Client } = require('basic-ftp');
+const { DEFAULT_RETRY_TIMEOUT } = require('../constants');
 
 function uploadFilesToFTPS({ ftps, sourceDir, files, remotePath }) {
   return files.map(file => {
@@ -26,7 +28,8 @@ async function uploadDirectoryToFTP({
   sourceDir,
   remotePath,
   verbose,
-  timeout
+  timeout,
+  retries
 }) {
   const client = new Client(timeout);
   if (verbose) {
@@ -43,8 +46,25 @@ async function uploadDirectoryToFTP({
     await client.access({
       ...ftpConfig
     });
-    console.log(`[INFO]: Preparing upload of the data directory`);
-    await client.uploadFromDir(sourceDir, remotePath);
+
+    await retry(
+      async (bail, retryAttempt) => {
+        if (retryAttempt > 1) {
+          console.log(`[INFO]: Trying to reconnect to the FTP`);
+          await client.access({
+            ...ftpConfig
+          });
+        }
+        console.log(
+          `[INFO]: Uploading content of the data directory, attempt: ${retryAttempt}/${retries}`
+        );
+        await client.uploadFromDir(sourceDir, remotePath);
+      },
+      {
+        retries,
+        minTimeout: DEFAULT_RETRY_TIMEOUT
+      }
+    );
   } catch (error) {
     throw error;
   }
@@ -56,7 +76,8 @@ async function uploadFilesToFTP({
   files,
   remotePath,
   verbose,
-  timeout
+  timeout,
+  retries
 }) {
   try {
     const client = new Client(timeout);
@@ -77,12 +98,29 @@ async function uploadFilesToFTP({
     console.log(`[INFO]: Successfully connected to a remote location`);
 
     for (const file of files) {
-      await putFileToFTP({
-        client,
-        sourceDir,
-        remotePath,
-        file
-      });
+      await retry(
+        async (bail, retryAttempt) => {
+          if (retryAttempt > 1) {
+            console.log(`[INFO]: Trying to reconnect to the FTP`);
+            await client.access({
+              ...ftpConfig
+            });
+          }
+
+          await putFileToFTP({
+            client,
+            sourceDir,
+            remotePath,
+            file,
+            retryAttempt,
+            retries
+          });
+        },
+        {
+          retries,
+          minTimeout: DEFAULT_RETRY_TIMEOUT
+        }
+      );
     }
 
     console.log(`[INFO]: Disconnecting from the remote location`);
@@ -92,12 +130,21 @@ async function uploadFilesToFTP({
   }
 }
 
-async function putFileToFTP({ client, sourceDir, remotePath, file }) {
+async function putFileToFTP({
+  client,
+  sourceDir,
+  remotePath,
+  file,
+  retryAttempt,
+  retries
+}) {
   const sourceFile = path.join(sourceDir, file.source);
   const outputFile = path.join(remotePath, file.destination);
 
   try {
-    console.log(`[INFO]: Preparing upload of the ${file.source}`);
+    console.log(
+      `[INFO]: Preparing upload of the ${file.source}, attempt no. ${retryAttempt}/${retries}`
+    );
     await client.upload(
       fs.createReadStream(sourceFile, { encoding: 'utf8' }),
       outputFile

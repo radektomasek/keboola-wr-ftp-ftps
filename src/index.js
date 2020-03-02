@@ -52,7 +52,8 @@ async function main() {
           sourceDir,
           remotePath,
           verbose,
-          timeout
+          timeout,
+          retries
         });
         console.log(
           `[INFO]: The content of data directory and file(s) were uploaded successfully!`
@@ -64,7 +65,8 @@ async function main() {
           files,
           remotePath,
           verbose,
-          timeout
+          timeout,
+          retries
         });
         console.log(`[INFO]: All file(s) uploaded successfully!`);
       }
